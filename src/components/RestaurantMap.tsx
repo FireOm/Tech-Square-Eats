@@ -2,7 +2,7 @@
 
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import { Icon } from 'leaflet';
-import { Restaurant } from '@/app/page';
+import { Restaurant } from '@/types/restaurant';
 import { useEffect } from 'react';
 import 'leaflet/dist/leaflet.css';
 
