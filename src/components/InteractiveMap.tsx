@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Restaurant } from '@/app/page';
+import { Restaurant } from '@/types/restaurant';
 
 interface InteractiveMapProps {
   restaurants: Restaurant[];
