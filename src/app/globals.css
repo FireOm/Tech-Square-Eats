@@ -120,3 +120,67 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Atlanta-themed animations */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes bounce-gentle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 5px rgba(251, 191, 36, 0.3); }
+  50% { box-shadow: 0 0 20px rgba(251, 191, 36, 0.6); }
+}
+
+@keyframes truck-drive {
+  0% { transform: translateX(-100px) scaleX(1); }
+  50% { transform: translateX(50vw) scaleX(1); }
+  100% { transform: translateX(100vw) scaleX(1); }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.6s ease-out;
+}
+
+.animate-bounce-gentle {
+  animation: bounce-gentle 2s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.animate-truck-drive {
+  animation: truck-drive 8s linear infinite;
+}
+
+/* Custom gold color for Atlanta theme */
+.text-gold-600 {
+  color: #d97706;
+}
+
+.bg-gold-500 {
+  background-color: #f59e0b;
+}
+
+.bg-gold-600 {
+  background-color: #d97706;
+}
+
+.border-gold-200 {
+  border-color: #fde68a;
+}
+
+.border-gold-300 {
+  border-color: #fcd34d;
+}
+
+/* Enhanced shadows */
+.shadow-3xl {
+  box-shadow: 0 35px 60px -12px rgba(0, 0, 0, 0.25);
+}

@@ -7,6 +7,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import InteractiveMap from '@/components/InteractiveMap';
+import FoodTruckBackground from '@/components/FoodTruckBackground';
+import AtlantaHeader from '@/components/AtlantaHeader';
 import { Restaurant } from '@/types/restaurant';
 
 // Define the structure of the API response (for future use)
@@ -305,39 +307,28 @@ export default function Home() {
     });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4 sm:p-6 lg:p-8">
-      <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-8 sm:mb-12">
-          <div className="flex flex-col sm:flex-row items-center justify-center mb-4 sm:mb-6">
-            <div className="bg-gradient-to-r from-orange-500 to-red-500 p-3 rounded-full mb-4 sm:mb-0 sm:mr-4">
-              <svg className="w-6 h-6 sm:w-8 sm:h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-              </svg>
-            </div>
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
-              Tech Square Eats
-            </h1>
-          </div>
-          <p className="text-lg sm:text-xl text-gray-600 mb-2">
-            Discover amazing restaurants in Tech Square
-          </p>
-          <p className="text-sm text-gray-500">
-            Georgia Tech&apos;s dining hub with dietary-friendly options
-          </p>
-        </div>
+    <div className="min-h-screen relative overflow-hidden">
+      {/* Animated Food Truck Background */}
+      <FoodTruckBackground />
+      
+      {/* Main Content */}
+      <div className="relative z-10 bg-gradient-to-br from-orange-50/90 via-yellow-50/90 to-red-50/90 backdrop-blur-sm p-4 sm:p-6 lg:p-8">
+        <div className="max-w-6xl mx-auto">
+          {/* Atlanta-Themed Header */}
+          <AtlantaHeader />
 
         {/* Search Form */}
-        <Card className="mb-8 shadow-xl border-0 bg-white/80 backdrop-blur-sm">
+        <Card className="mb-8 shadow-2xl border-2 border-gold-200 bg-gradient-to-r from-white/90 to-yellow-50/90 backdrop-blur-sm hover:shadow-3xl transition-all duration-300">
           <CardHeader className="pb-4">
-            <CardTitle className="text-2xl flex items-center">
-              <svg className="w-6 h-6 mr-2 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-              Find Your Perfect Meal
+            <CardTitle className="text-2xl flex items-center animate-pulse">
+              <span className="mr-2">🍽️</span>
+              <span className="bg-gradient-to-r from-gold-600 to-orange-600 bg-clip-text text-transparent">
+                Find Your Perfect Meal
+              </span>
             </CardTitle>
-            <CardDescription className="text-base">
+            <CardDescription className="text-base text-gray-700">
               Search for restaurants, cuisines, or dietary options in Tech Square
+              <span className="ml-2">🎯</span>
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -365,7 +356,7 @@ export default function Home() {
               <Button 
                 type="submit" 
                 disabled={loading || !location.trim()}
-                className="w-full h-12 text-lg font-semibold bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                className="w-full h-12 text-lg font-semibold bg-gradient-to-r from-gold-500 via-orange-500 to-red-500 hover:from-gold-600 hover:via-orange-600 hover:to-red-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
               >
                 {loading ? (
                   <div className="flex items-center">
@@ -815,6 +806,7 @@ export default function Home() {
             </CardContent>
           </Card>
         )}
+        </div>
       </div>
     </div>
   );
