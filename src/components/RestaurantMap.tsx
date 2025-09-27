@@ -7,7 +7,7 @@ import { useEffect } from 'react';
 import 'leaflet/dist/leaflet.css';
 
 // Fix for default markers in React Leaflet
-delete (Icon.Default.prototype as any)._getIconUrl;
+delete (Icon.Default.prototype as { _getIconUrl?: string })._getIconUrl;
 Icon.Default.mergeOptions({
   iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
   iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
@@ -72,7 +72,7 @@ function MapUpdater({ restaurants }: { restaurants: Restaurant[] }) {
   return null;
 }
 
-export default function RestaurantMap({ restaurants, selectedRestaurant, onRestaurantSelect }: RestaurantMapProps) {
+export default function RestaurantMap({ restaurants, onRestaurantSelect }: RestaurantMapProps) {
   // Tech Square coordinates (approximate center)
   const techSquareCenter: [number, number] = [33.7756, -84.3963];
   
