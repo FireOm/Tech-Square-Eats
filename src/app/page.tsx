@@ -34,12 +34,12 @@ interface Restaurant {
   distance: string; // Distance from Tech Square
 }
 
-// Define the structure of the API response
-interface ApiResponse {
-  restaurants: Restaurant[];
-  location: string;
-  total: number;
-}
+// Define the structure of the API response (for future use)
+// interface ApiResponse {
+//   restaurants: Restaurant[];
+//   location: string;
+//   total: number;
+// }
 
 export default function Home() {
   // State management for the component
@@ -269,8 +269,8 @@ export default function Home() {
           restaurant.cuisine.toLowerCase().includes(searchTerm) ||
           restaurant.description.toLowerCase().includes(searchTerm) ||
           Object.entries(restaurant.dietaryOptions)
-            .filter(([_, available]) => available)
-            .some(([option, _]) => option.toLowerCase().includes(searchTerm))
+            .filter(([, available]) => available)
+            .some(([option]) => option.toLowerCase().includes(searchTerm))
         );
       }
 
@@ -287,7 +287,7 @@ export default function Home() {
   // Load all restaurants on component mount
   useEffect(() => {
     fetchRestaurants();
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Handle form submission
   const handleSubmit = (e: React.FormEvent) => {
@@ -346,7 +346,7 @@ export default function Home() {
             Discover amazing restaurants in Tech Square
           </p>
           <p className="text-sm text-gray-500">
-            Georgia Tech's dining hub with dietary-friendly options
+            Georgia Tech&apos;s dining hub with dietary-friendly options
           </p>
         </div>
 
@@ -629,8 +629,8 @@ export default function Home() {
                       {/* Dietary Options */}
                       <div className="flex flex-wrap gap-1">
                         {Object.entries(restaurant.dietaryOptions)
-                          .filter(([_, available]) => available)
-                          .map(([option, _]) => {
+                          .filter(([, available]) => available)
+                          .map(([option]) => {
                             const optionLabels: { [key: string]: string } = {
                               vegan: 'Vegan',
                               vegetarian: 'Vegetarian',
