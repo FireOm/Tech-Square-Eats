@@ -94,7 +94,7 @@ export default function InteractiveMap({
       </div>
 
       {/* Map Title */}
-      <div className="absolute top-2 left-2 sm:top-4 sm:left-4 bg-white/90 backdrop-blur-sm px-2 py-1 sm:px-3 sm:py-2 rounded-lg shadow-md">
+      <div className="absolute top-2 left-2 sm:top-4 sm:left-4 bg-white/95 px-2 py-1 sm:px-3 sm:py-2 rounded-lg shadow-md">
         <h3 className="text-xs sm:text-sm font-bold text-gray-800">Tech Square Map</h3>
         <p className="text-xs text-gray-600">
           {visibleRestaurants.length} restaurants visible
@@ -102,7 +102,7 @@ export default function InteractiveMap({
       </div>
 
       {/* Legend */}
-      <div className="absolute top-2 right-2 sm:top-4 sm:right-4 bg-white/90 backdrop-blur-sm px-2 py-1 sm:px-3 sm:py-2 rounded-lg shadow-md">
+      <div className="absolute top-2 right-2 sm:top-4 sm:right-4 bg-white/95 px-2 py-1 sm:px-3 sm:py-2 rounded-lg shadow-md">
         <div className="text-xs font-semibold text-gray-800 mb-1">Dietary Options</div>
         <div className="flex space-x-1">
           <div className="w-3 h-3 bg-green-500 rounded-sm"></div>
@@ -195,7 +195,7 @@ export default function InteractiveMap({
       </div>
 
       {/* Map Instructions */}
-      <div className="absolute bottom-2 left-2 right-2 sm:bottom-4 sm:left-4 sm:right-4 bg-white/90 backdrop-blur-sm px-2 py-1 sm:px-3 sm:py-2 rounded-lg shadow-md">
+      <div className="absolute bottom-2 left-2 right-2 sm:bottom-4 sm:left-4 sm:right-4 bg-white/95 px-2 py-1 sm:px-3 sm:py-2 rounded-lg shadow-md">
         <div className="text-xs text-gray-600 text-center">
           <span className="hidden sm:inline">🎯 Click on restaurant blocks to view details • 🏗️ Size = dietary options • 🎨 Color = dietary variety</span>
           <span className="sm:hidden">🎯 Tap blocks for details</span>

@@ -312,13 +312,13 @@ export default function Home() {
       <FoodTruckBackground />
       
       {/* Main Content */}
-      <div className="relative z-10 bg-gradient-to-br from-orange-50/90 via-yellow-50/90 to-red-50/90 backdrop-blur-sm p-4 sm:p-6 lg:p-8">
+      <div className="relative z-10 p-4 sm:p-6 lg:p-8">
         <div className="max-w-6xl mx-auto">
           {/* Atlanta-Themed Header */}
           <AtlantaHeader />
 
         {/* Search Form */}
-        <Card className="mb-8 shadow-2xl border-2 border-gold-200 bg-gradient-to-r from-white/90 to-yellow-50/90 backdrop-blur-sm hover:shadow-3xl transition-all duration-300">
+        <Card className="mb-8 shadow-2xl border-2 border-gold-200 bg-white/95 hover:shadow-3xl transition-all duration-300">
           <CardHeader className="pb-4">
             <CardTitle className="text-2xl flex items-center animate-pulse">
               <span className="mr-2">🍽️</span>
@@ -466,7 +466,7 @@ export default function Home() {
             {/* Interactive Map */}
             {showMap && (
               <div className="mb-8">
-                <Card className="shadow-xl border-0 bg-white/90 backdrop-blur-sm">
+                <Card className="shadow-xl border-0 bg-white/95">
                   <CardHeader className="pb-4">
                     <CardTitle className="text-xl flex items-center">
                       <svg className="w-5 h-5 mr-2 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -491,7 +491,7 @@ export default function Home() {
             )}
 
             {/* Filter and Sort Controls */}
-            <Card className="mb-6 shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+            <Card className="mb-6 shadow-lg border-0 bg-white/90">
               <CardContent className="pt-6">
                 <div className="space-y-6">
                   {/* Dietary Restrictions Filter */}
@@ -670,7 +670,7 @@ export default function Home() {
 
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {filteredAndSortedRestaurants.map((restaurant) => (
-                <Card key={restaurant.id} className="group hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 border-0 bg-white/90 backdrop-blur-sm">
+                <Card key={restaurant.id} className="group hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 border-0 bg-white/95">
                   <CardHeader className="pb-3">
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
@@ -771,7 +771,7 @@ export default function Home() {
         )}
 
         {!loading && !error && restaurants.length === 0 && searchLocation && (
-          <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+          <Card className="shadow-lg border-0 bg-white/90">
             <CardContent className="pt-12 pb-12">
               <div className="text-center">
                 <div className="w-20 h-20 bg-gradient-to-r from-orange-100 to-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
