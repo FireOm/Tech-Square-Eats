@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 // Define the structure of restaurant data
 interface Restaurant {
@@ -30,6 +31,8 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [searchLocation, setSearchLocation] = useState('');
+  const [sortBy, setSortBy] = useState('rating');
+  const [filterCuisine, setFilterCuisine] = useState('all');
 
   // Function to fetch restaurants from our API route
   const fetchRestaurants = async () => {
@@ -68,46 +71,106 @@ export default function Home() {
     fetchRestaurants();
   };
 
+  // Get unique cuisines for filter
+  const uniqueCuisines = Array.from(new Set(restaurants.map(r => r.cuisine)));
+
+  // Filter and sort restaurants
+  const filteredAndSortedRestaurants = restaurants
+    .filter(restaurant => filterCuisine === 'all' || restaurant.cuisine === filterCuisine)
+    .sort((a, b) => {
+      switch (sortBy) {
+        case 'rating':
+          return b.rating - a.rating;
+        case 'name':
+          return a.name.localeCompare(b.name);
+        case 'price':
+          const priceOrder = { '$': 1, '$$': 2, '$$$': 3, '$$$$': 4 };
+          return (priceOrder[a.priceRange as keyof typeof priceOrder] || 0) - 
+                 (priceOrder[b.priceRange as keyof typeof priceOrder] || 0);
+        default:
+          return 0;
+      }
+    });
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4 sm:p-6 lg:p-8">
+      <div className="max-w-6xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">
-            Restaurant Finder
-          </h1>
-          <p className="text-gray-600">
-            Discover great restaurants in your area
+        <div className="text-center mb-8 sm:mb-12">
+          <div className="flex flex-col sm:flex-row items-center justify-center mb-4 sm:mb-6">
+            <div className="bg-gradient-to-r from-orange-500 to-red-500 p-3 rounded-full mb-4 sm:mb-0 sm:mr-4">
+              <svg className="w-6 h-6 sm:w-8 sm:h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+              </svg>
+            </div>
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
+              FoodieFinder
+            </h1>
+          </div>
+          <p className="text-lg sm:text-xl text-gray-600 mb-2">
+            Discover amazing restaurants near you
+          </p>
+          <p className="text-sm text-gray-500">
+            Powered by local reviews and real-time data
           </p>
         </div>
 
         {/* Search Form */}
-        <Card className="mb-8">
-          <CardHeader>
-            <CardTitle>Search for Restaurants</CardTitle>
-            <CardDescription>
-              Enter a location to find nearby restaurants
+        <Card className="mb-8 shadow-xl border-0 bg-white/80 backdrop-blur-sm">
+          <CardHeader className="pb-4">
+            <CardTitle className="text-2xl flex items-center">
+              <svg className="w-6 h-6 mr-2 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+              Find Your Perfect Meal
+            </CardTitle>
+            <CardDescription className="text-base">
+              Enter your location to discover the best restaurants nearby
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="location">Location</Label>
-                <Input
-                  id="location"
-                  type="text"
-                  placeholder="Enter city, address, or neighborhood..."
-                  value={location}
-                  onChange={(e) => setLocation(e.target.value)}
-                  disabled={loading}
-                />
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="space-y-3">
+                <Label htmlFor="location" className="text-sm font-semibold text-gray-700">
+                  Where are you looking for food?
+                </Label>
+                <div className="relative">
+                  <Input
+                    id="location"
+                    type="text"
+                    placeholder="Enter city, address, or neighborhood..."
+                    value={location}
+                    onChange={(e) => setLocation(e.target.value)}
+                    disabled={loading}
+                    className="pl-12 h-12 text-lg border-2 focus:border-orange-500 focus:ring-orange-500"
+                  />
+                  <svg className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                </div>
               </div>
               <Button 
                 type="submit" 
                 disabled={loading || !location.trim()}
-                className="w-full"
+                className="w-full h-12 text-lg font-semibold bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
               >
-                {loading ? 'Searching...' : 'Find Restaurants'}
+                {loading ? (
+                  <div className="flex items-center">
+                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Searching...
+                  </div>
+                ) : (
+                  <div className="flex items-center">
+                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                    Find Restaurants
+                  </div>
+                )}
               </Button>
             </form>
           </CardContent>
@@ -115,21 +178,52 @@ export default function Home() {
 
         {/* Results Section */}
         {error && (
-          <Card className="mb-6 border-red-200 bg-red-50">
+          <Card className="mb-6 border-red-200 bg-red-50 shadow-lg">
             <CardContent className="pt-6">
-              <div className="text-red-600">
-                <strong>Error:</strong> {error}
+              <div className="flex items-center text-red-600">
+                <svg className="w-6 h-6 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <div>
+                  <strong className="block">Oops! Something went wrong</strong>
+                  <span className="text-sm">{error}</span>
+                </div>
               </div>
             </CardContent>
           </Card>
         )}
 
         {loading && (
-          <Card className="mb-6">
-            <CardContent className="pt-6">
-              <div className="text-center text-gray-600">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-2"></div>
-                Searching for restaurants...
+          <Card className="mb-6 shadow-lg">
+            <CardContent className="pt-8 pb-8">
+              <div className="text-center">
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-orange-500 to-red-500 rounded-full mb-4">
+                  <svg className="animate-spin w-8 h-8 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">Finding the best restaurants...</h3>
+                <p className="text-gray-600">Searching through our database of local favorites</p>
+                
+                {/* Loading Skeleton */}
+                <div className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                  {[1, 2, 3].map((i) => (
+                    <Card key={i} className="animate-pulse">
+                      <CardHeader>
+                        <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+                        <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-2">
+                          <div className="h-3 bg-gray-200 rounded w-full"></div>
+                          <div className="h-3 bg-gray-200 rounded w-2/3"></div>
+                          <div className="h-3 bg-gray-200 rounded w-1/3"></div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -137,28 +231,139 @@ export default function Home() {
 
         {restaurants.length > 0 && (
           <div>
-            <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-              Restaurants in {searchLocation}
-            </h2>
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {restaurants.map((restaurant) => (
-                <Card key={restaurant.id} className="hover:shadow-lg transition-shadow">
-                  <CardHeader>
-                    <CardTitle className="text-lg">{restaurant.name}</CardTitle>
-                    <CardDescription>
-                      {restaurant.cuisine} • {restaurant.priceRange}
-                    </CardDescription>
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h2 className="text-3xl font-bold text-gray-900 mb-2">
+                  🍽️ Restaurants in {searchLocation}
+                </h2>
+                <p className="text-gray-600">
+                  Found {filteredAndSortedRestaurants.length} amazing restaurants near you
+                </p>
+              </div>
+              <div className="hidden md:flex items-center space-x-2 text-sm text-gray-500">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+                <span>Updated just now</span>
+              </div>
+            </div>
+
+            {/* Filter and Sort Controls */}
+            <Card className="mb-6 shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+              <CardContent className="pt-6">
+                <div className="flex flex-col md:flex-row gap-4">
+                  <div className="flex-1">
+                    <Label htmlFor="cuisine-filter" className="text-sm font-semibold text-gray-700 mb-2 block">
+                      Filter by Cuisine
+                    </Label>
+                    <Select value={filterCuisine} onValueChange={setFilterCuisine}>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="All cuisines" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Cuisines</SelectItem>
+                        {uniqueCuisines.map((cuisine) => (
+                          <SelectItem key={cuisine} value={cuisine}>
+                            {cuisine}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="flex-1">
+                    <Label htmlFor="sort-by" className="text-sm font-semibold text-gray-700 mb-2 block">
+                      Sort by
+                    </Label>
+                    <Select value={sortBy} onValueChange={setSortBy}>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Sort by" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="rating">Highest Rating</SelectItem>
+                        <SelectItem value="name">Name (A-Z)</SelectItem>
+                        <SelectItem value="price">Price (Low to High)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="flex items-end">
+                    <Button 
+                      variant="outline" 
+                      onClick={() => {
+                        setFilterCuisine('all');
+                        setSortBy('rating');
+                      }}
+                      className="border-orange-300 text-orange-600 hover:bg-orange-50"
+                    >
+                      <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                      </svg>
+                      Reset
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {filteredAndSortedRestaurants.map((restaurant) => (
+                <Card key={restaurant.id} className="group hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 border-0 bg-white/90 backdrop-blur-sm">
+                  <CardHeader className="pb-3">
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <CardTitle className="text-xl font-bold text-gray-900 group-hover:text-orange-600 transition-colors">
+                          {restaurant.name}
+                        </CardTitle>
+                        <CardDescription className="text-base mt-1">
+                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800 mr-2">
+                            {restaurant.cuisine}
+                          </span>
+                          <span className="text-gray-600">{restaurant.priceRange}</span>
+                        </CardDescription>
+                      </div>
+                      <div className="flex items-center ml-4">
+                        <div className="flex items-center bg-yellow-50 px-2 py-1 rounded-full">
+                          <svg className="w-4 h-4 text-yellow-500 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                          </svg>
+                          <span className="text-sm font-bold text-yellow-700">
+                            {restaurant.rating}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
                   </CardHeader>
-                  <CardContent>
-                    <div className="space-y-2">
-                      <p className="text-sm text-gray-600">
-                        📍 {restaurant.address}
-                      </p>
-                      <div className="flex items-center">
-                        <span className="text-yellow-500">⭐</span>
-                        <span className="ml-1 text-sm font-medium">
-                          {restaurant.rating}/5
-                        </span>
+                  <CardContent className="pt-0">
+                    <div className="space-y-3">
+                      <div className="flex items-start">
+                        <svg className="w-4 h-4 text-gray-400 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        <p className="text-sm text-gray-600 leading-relaxed">
+                          {restaurant.address}
+                        </p>
+                      </div>
+                      
+                      <div className="flex items-center justify-between pt-2">
+                        <div className="flex items-center space-x-4 text-sm text-gray-500">
+                          <div className="flex items-center">
+                            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span>Open now</span>
+                          </div>
+                          <div className="flex items-center">
+                            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                            </svg>
+                            <span>Call</span>
+                          </div>
+                        </div>
+                        <Button 
+                          size="sm" 
+                          className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-medium"
+                        >
+                          View Details
+                        </Button>
                       </div>
                     </div>
                   </CardContent>
@@ -169,11 +374,37 @@ export default function Home() {
         )}
 
         {!loading && !error && restaurants.length === 0 && searchLocation && (
-          <Card>
-            <CardContent className="pt-6">
-              <div className="text-center text-gray-600">
-                <p>No restaurants found for &quot;{searchLocation}&quot;</p>
-                <p className="text-sm mt-1">Try a different location or check your spelling</p>
+          <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+            <CardContent className="pt-12 pb-12">
+              <div className="text-center">
+                <div className="w-20 h-20 bg-gradient-to-r from-orange-100 to-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <svg className="w-10 h-10 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6-4h6m2 5.291A7.962 7.962 0 0118 12a8 8 0 10-8 8 7.962 7.962 0 01-2.291-.5" />
+                  </svg>
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-3">
+                  No restaurants found
+                </h3>
+                <p className="text-lg text-gray-600 mb-2">
+                  We couldn&apos;t find any restaurants for &quot;{searchLocation}&quot;
+                </p>
+                <p className="text-sm text-gray-500 mb-6">
+                  Try a different location, check your spelling, or search for a nearby city
+                </p>
+                <Button 
+                  onClick={() => {
+                    setLocation('');
+                    setSearchLocation('');
+                    setRestaurants([]);
+                  }}
+                  variant="outline"
+                  className="border-orange-300 text-orange-600 hover:bg-orange-50"
+                >
+                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg>
+                  Try Again
+                </Button>
               </div>
             </CardContent>
           </Card>
