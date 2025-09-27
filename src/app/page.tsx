@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -15,6 +15,23 @@ interface Restaurant {
   rating: number;
   cuisine: string;
   priceRange: string;
+  dietaryOptions: {
+    vegan: boolean;
+    vegetarian: boolean;
+    glutenFree: boolean;
+    peanutFree: boolean;
+    dairyFree: boolean;
+    nutFree: boolean;
+    soyFree: boolean;
+    keto: boolean;
+    halal: boolean;
+    kosher: boolean;
+  };
+  description: string;
+  hours: string;
+  phone: string;
+  website?: string;
+  distance: string; // Distance from Tech Square
 }
 
 // Define the structure of the API response
@@ -33,30 +50,232 @@ export default function Home() {
   const [searchLocation, setSearchLocation] = useState('');
   const [sortBy, setSortBy] = useState('rating');
   const [filterCuisine, setFilterCuisine] = useState('all');
+  const [dietaryFilters, setDietaryFilters] = useState<string[]>([]);
 
-  // Function to fetch restaurants from our API route
+  // Sample Tech Square restaurants data
+  const techSquareRestaurants: Restaurant[] = [
+    {
+      id: '1',
+      name: 'Rise-n-Dine',
+      address: '1040 W Peachtree St NW, Atlanta, GA 30309',
+      rating: 4.5,
+      cuisine: 'American',
+      priceRange: '$$',
+      dietaryOptions: {
+        vegan: false,
+        vegetarian: true,
+        glutenFree: true,
+        peanutFree: false,
+        dairyFree: false,
+        nutFree: false,
+        soyFree: false,
+        keto: true,
+        halal: false,
+        kosher: false,
+      },
+      description: 'Popular breakfast and brunch spot with fresh ingredients',
+      hours: '7:00 AM - 3:00 PM',
+      phone: '(404) 892-1000',
+      website: 'https://risendine.com',
+      distance: '0.2 miles',
+    },
+    {
+      id: '2',
+      name: 'Tin Lizzy\'s Cantina',
+      address: '1040 W Peachtree St NW, Atlanta, GA 30309',
+      rating: 4.2,
+      cuisine: 'Mexican',
+      priceRange: '$$',
+      dietaryOptions: {
+        vegan: true,
+        vegetarian: true,
+        glutenFree: true,
+        peanutFree: true,
+        dairyFree: true,
+        nutFree: true,
+        soyFree: false,
+        keto: false,
+        halal: false,
+        kosher: false,
+      },
+      description: 'Fresh Mexican cuisine with extensive vegan options',
+      hours: '11:00 AM - 10:00 PM',
+      phone: '(404) 892-1001',
+      distance: '0.1 miles',
+    },
+    {
+      id: '3',
+      name: 'Chipotle Mexican Grill',
+      address: '1040 W Peachtree St NW, Atlanta, GA 30309',
+      rating: 4.0,
+      cuisine: 'Mexican',
+      priceRange: '$',
+      dietaryOptions: {
+        vegan: true,
+        vegetarian: true,
+        glutenFree: true,
+        peanutFree: true,
+        dairyFree: true,
+        nutFree: true,
+        soyFree: true,
+        keto: true,
+        halal: false,
+        kosher: false,
+      },
+      description: 'Build your own burrito with fresh, customizable ingredients',
+      hours: '10:30 AM - 10:00 PM',
+      phone: '(404) 892-1002',
+      distance: '0.1 miles',
+    },
+    {
+      id: '4',
+      name: 'Subway',
+      address: '1040 W Peachtree St NW, Atlanta, GA 30309',
+      rating: 3.8,
+      cuisine: 'Sandwiches',
+      priceRange: '$',
+      dietaryOptions: {
+        vegan: true,
+        vegetarian: true,
+        glutenFree: true,
+        peanutFree: true,
+        dairyFree: true,
+        nutFree: true,
+        soyFree: true,
+        keto: true,
+        halal: true,
+        kosher: false,
+      },
+      description: 'Fresh subs and salads with extensive customization options',
+      hours: '7:00 AM - 9:00 PM',
+      phone: '(404) 892-1003',
+      distance: '0.1 miles',
+    },
+    {
+      id: '5',
+      name: 'Starbucks',
+      address: '1040 W Peachtree St NW, Atlanta, GA 30309',
+      rating: 4.1,
+      cuisine: 'Coffee',
+      priceRange: '$$',
+      dietaryOptions: {
+        vegan: true,
+        vegetarian: true,
+        glutenFree: true,
+        peanutFree: false,
+        dairyFree: true,
+        nutFree: false,
+        soyFree: true,
+        keto: true,
+        halal: true,
+        kosher: false,
+      },
+      description: 'Coffee, tea, and light bites with many dietary options',
+      hours: '5:30 AM - 9:00 PM',
+      phone: '(404) 892-1004',
+      distance: '0.0 miles',
+    },
+    {
+      id: '6',
+      name: 'Panda Express',
+      address: '1040 W Peachtree St NW, Atlanta, GA 30309',
+      rating: 3.9,
+      cuisine: 'Chinese',
+      priceRange: '$',
+      dietaryOptions: {
+        vegan: false,
+        vegetarian: true,
+        glutenFree: false,
+        peanutFree: false,
+        dairyFree: true,
+        nutFree: false,
+        soyFree: false,
+        keto: false,
+        halal: false,
+        kosher: false,
+      },
+      description: 'American Chinese fast food with some vegetarian options',
+      hours: '10:00 AM - 10:00 PM',
+      phone: '(404) 892-1005',
+      distance: '0.2 miles',
+    },
+    {
+      id: '7',
+      name: 'Chick-fil-A',
+      address: '1040 W Peachtree St NW, Atlanta, GA 30309',
+      rating: 4.3,
+      cuisine: 'American',
+      priceRange: '$',
+      dietaryOptions: {
+        vegan: false,
+        vegetarian: false,
+        glutenFree: true,
+        peanutFree: true,
+        dairyFree: false,
+        nutFree: true,
+        soyFree: false,
+        keto: true,
+        halal: false,
+        kosher: false,
+      },
+      description: 'Chicken sandwiches and nuggets with gluten-free options',
+      hours: '6:30 AM - 10:00 PM',
+      phone: '(404) 892-1006',
+      distance: '0.1 miles',
+    },
+    {
+      id: '8',
+      name: 'Freshii',
+      address: '1040 W Peachtree St NW, Atlanta, GA 30309',
+      rating: 4.4,
+      cuisine: 'Healthy',
+      priceRange: '$$',
+      dietaryOptions: {
+        vegan: true,
+        vegetarian: true,
+        glutenFree: true,
+        peanutFree: true,
+        dairyFree: true,
+        nutFree: true,
+        soyFree: true,
+        keto: true,
+        halal: true,
+        kosher: false,
+      },
+      description: 'Fresh salads, bowls, and wraps with extensive dietary options',
+      hours: '8:00 AM - 8:00 PM',
+      phone: '(404) 892-1007',
+      distance: '0.1 miles',
+    },
+  ];
+
+  // Function to fetch restaurants from Tech Square data
   const fetchRestaurants = async () => {
-    if (!location.trim()) {
-      setError('Please enter a location');
-      return;
-    }
-
     setLoading(true);
     setError(null);
     setRestaurants([]);
 
     try {
-      // Call our internal Next.js API route
-      const response = await fetch(`/api/restaurants?location=${encodeURIComponent(location)}`);
+      // Simulate API call with delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
       
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to fetch restaurants');
+      // Filter Tech Square restaurants based on search
+      let filteredRestaurants = techSquareRestaurants;
+      
+      if (location.trim()) {
+        const searchTerm = location.toLowerCase();
+        filteredRestaurants = techSquareRestaurants.filter(restaurant => 
+          restaurant.name.toLowerCase().includes(searchTerm) ||
+          restaurant.cuisine.toLowerCase().includes(searchTerm) ||
+          restaurant.description.toLowerCase().includes(searchTerm) ||
+          Object.entries(restaurant.dietaryOptions)
+            .filter(([_, available]) => available)
+            .some(([option, _]) => option.toLowerCase().includes(searchTerm))
+        );
       }
 
-      const data: ApiResponse = await response.json();
-      setRestaurants(data.restaurants || []);
-      setSearchLocation(data.location || location);
+      setRestaurants(filteredRestaurants);
+      setSearchLocation('Tech Square, Atlanta');
       
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An unexpected error occurred');
@@ -64,6 +283,11 @@ export default function Home() {
       setLoading(false);
     }
   };
+
+  // Load all restaurants on component mount
+  useEffect(() => {
+    fetchRestaurants();
+  }, []);
 
   // Handle form submission
   const handleSubmit = (e: React.FormEvent) => {
@@ -76,7 +300,16 @@ export default function Home() {
 
   // Filter and sort restaurants
   const filteredAndSortedRestaurants = restaurants
-    .filter(restaurant => filterCuisine === 'all' || restaurant.cuisine === filterCuisine)
+    .filter(restaurant => {
+      // Filter by cuisine
+      const cuisineMatch = filterCuisine === 'all' || restaurant.cuisine === filterCuisine;
+      
+      // Filter by dietary restrictions
+      const dietaryMatch = dietaryFilters.length === 0 || 
+        dietaryFilters.every(filter => restaurant.dietaryOptions[filter as keyof typeof restaurant.dietaryOptions]);
+      
+      return cuisineMatch && dietaryMatch;
+    })
     .sort((a, b) => {
       switch (sortBy) {
         case 'rating':
@@ -87,6 +320,8 @@ export default function Home() {
           const priceOrder = { '$': 1, '$$': 2, '$$$': 3, '$$$$': 4 };
           return (priceOrder[a.priceRange as keyof typeof priceOrder] || 0) - 
                  (priceOrder[b.priceRange as keyof typeof priceOrder] || 0);
+        case 'distance':
+          return parseFloat(a.distance) - parseFloat(b.distance);
         default:
           return 0;
       }
@@ -104,14 +339,14 @@ export default function Home() {
               </svg>
             </div>
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
-              FoodieFinder
+              Tech Square Eats
             </h1>
           </div>
           <p className="text-lg sm:text-xl text-gray-600 mb-2">
-            Discover amazing restaurants near you
+            Discover amazing restaurants in Tech Square
           </p>
           <p className="text-sm text-gray-500">
-            Powered by local reviews and real-time data
+            Georgia Tech's dining hub with dietary-friendly options
           </p>
         </div>
 
@@ -125,20 +360,20 @@ export default function Home() {
               Find Your Perfect Meal
             </CardTitle>
             <CardDescription className="text-base">
-              Enter your location to discover the best restaurants nearby
+              Search for restaurants, cuisines, or dietary options in Tech Square
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-3">
                 <Label htmlFor="location" className="text-sm font-semibold text-gray-700">
-                  Where are you looking for food?
+                  What are you craving?
                 </Label>
                 <div className="relative">
                   <Input
                     id="location"
                     type="text"
-                    placeholder="Enter city, address, or neighborhood..."
+                    placeholder="Search restaurants, cuisines, or dietary options..."
                     value={location}
                     onChange={(e) => setLocation(e.target.value)}
                     disabled={loading}
@@ -251,54 +486,98 @@ export default function Home() {
             {/* Filter and Sort Controls */}
             <Card className="mb-6 shadow-lg border-0 bg-white/80 backdrop-blur-sm">
               <CardContent className="pt-6">
-                <div className="flex flex-col md:flex-row gap-4">
-                  <div className="flex-1">
-                    <Label htmlFor="cuisine-filter" className="text-sm font-semibold text-gray-700 mb-2 block">
-                      Filter by Cuisine
+                <div className="space-y-6">
+                  {/* Dietary Restrictions Filter */}
+                  <div>
+                    <Label className="text-sm font-semibold text-gray-700 mb-3 block">
+                      Dietary Restrictions & Preferences
                     </Label>
-                    <Select value={filterCuisine} onValueChange={setFilterCuisine}>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="All cuisines" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All Cuisines</SelectItem>
-                        {uniqueCuisines.map((cuisine) => (
-                          <SelectItem key={cuisine} value={cuisine}>
-                            {cuisine}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <div className="flex flex-wrap gap-2">
+                      {[
+                        { key: 'vegan', label: 'Vegan', color: 'bg-green-100 text-green-800 border-green-300' },
+                        { key: 'vegetarian', label: 'Vegetarian', color: 'bg-green-100 text-green-800 border-green-300' },
+                        { key: 'glutenFree', label: 'Gluten-Free', color: 'bg-blue-100 text-blue-800 border-blue-300' },
+                        { key: 'peanutFree', label: 'Peanut-Free', color: 'bg-red-100 text-red-800 border-red-300' },
+                        { key: 'dairyFree', label: 'Dairy-Free', color: 'bg-purple-100 text-purple-800 border-purple-300' },
+                        { key: 'nutFree', label: 'Nut-Free', color: 'bg-red-100 text-red-800 border-red-300' },
+                        { key: 'soyFree', label: 'Soy-Free', color: 'bg-yellow-100 text-yellow-800 border-yellow-300' },
+                        { key: 'keto', label: 'Keto', color: 'bg-orange-100 text-orange-800 border-orange-300' },
+                        { key: 'halal', label: 'Halal', color: 'bg-emerald-100 text-emerald-800 border-emerald-300' },
+                        { key: 'kosher', label: 'Kosher', color: 'bg-indigo-100 text-indigo-800 border-indigo-300' },
+                      ].map((option) => (
+                        <button
+                          key={option.key}
+                          onClick={() => {
+                            setDietaryFilters(prev => 
+                              prev.includes(option.key) 
+                                ? prev.filter(f => f !== option.key)
+                                : [...prev, option.key]
+                            );
+                          }}
+                          className={`px-3 py-1 rounded-full text-sm font-medium border transition-all ${
+                            dietaryFilters.includes(option.key)
+                              ? `${option.color} ring-2 ring-offset-1`
+                              : 'bg-gray-100 text-gray-700 border-gray-300 hover:bg-gray-200'
+                          }`}
+                        >
+                          {option.label}
+                        </button>
+                      ))}
+                    </div>
                   </div>
-                  <div className="flex-1">
-                    <Label htmlFor="sort-by" className="text-sm font-semibold text-gray-700 mb-2 block">
-                      Sort by
-                    </Label>
-                    <Select value={sortBy} onValueChange={setSortBy}>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Sort by" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="rating">Highest Rating</SelectItem>
-                        <SelectItem value="name">Name (A-Z)</SelectItem>
-                        <SelectItem value="price">Price (Low to High)</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="flex items-end">
-                    <Button 
-                      variant="outline" 
-                      onClick={() => {
-                        setFilterCuisine('all');
-                        setSortBy('rating');
-                      }}
-                      className="border-orange-300 text-orange-600 hover:bg-orange-50"
-                    >
-                      <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                      </svg>
-                      Reset
-                    </Button>
+
+                  {/* Cuisine and Sort Controls */}
+                  <div className="flex flex-col md:flex-row gap-4">
+                    <div className="flex-1">
+                      <Label htmlFor="cuisine-filter" className="text-sm font-semibold text-gray-700 mb-2 block">
+                        Filter by Cuisine
+                      </Label>
+                      <Select value={filterCuisine} onValueChange={setFilterCuisine}>
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="All cuisines" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">All Cuisines</SelectItem>
+                          {uniqueCuisines.map((cuisine) => (
+                            <SelectItem key={cuisine} value={cuisine}>
+                              {cuisine}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="flex-1">
+                      <Label htmlFor="sort-by" className="text-sm font-semibold text-gray-700 mb-2 block">
+                        Sort by
+                      </Label>
+                      <Select value={sortBy} onValueChange={setSortBy}>
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Sort by" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="rating">Highest Rating</SelectItem>
+                          <SelectItem value="name">Name (A-Z)</SelectItem>
+                          <SelectItem value="price">Price (Low to High)</SelectItem>
+                          <SelectItem value="distance">Distance (Closest First)</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="flex items-end">
+                      <Button 
+                        variant="outline" 
+                        onClick={() => {
+                          setFilterCuisine('all');
+                          setSortBy('rating');
+                          setDietaryFilters([]);
+                        }}
+                        className="border-orange-300 text-orange-600 hover:bg-orange-50"
+                      >
+                        <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                        Reset All
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </CardContent>
@@ -316,8 +595,12 @@ export default function Home() {
                           <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800 mr-2">
                             {restaurant.cuisine}
                           </span>
-                          <span className="text-gray-600">{restaurant.priceRange}</span>
+                          <span className="text-gray-600 mr-2">{restaurant.priceRange}</span>
+                          <span className="text-xs text-gray-500">• {restaurant.distance}</span>
                         </CardDescription>
+                        <div className="mt-2">
+                          <p className="text-sm text-gray-600">{restaurant.description}</p>
+                        </div>
                       </div>
                       <div className="flex items-center ml-4">
                         <div className="flex items-center bg-yellow-50 px-2 py-1 rounded-full">
@@ -341,6 +624,34 @@ export default function Home() {
                         <p className="text-sm text-gray-600 leading-relaxed">
                           {restaurant.address}
                         </p>
+        </div>
+
+                      {/* Dietary Options */}
+                      <div className="flex flex-wrap gap-1">
+                        {Object.entries(restaurant.dietaryOptions)
+                          .filter(([_, available]) => available)
+                          .map(([option, _]) => {
+                            const optionLabels: { [key: string]: string } = {
+                              vegan: 'Vegan',
+                              vegetarian: 'Vegetarian',
+                              glutenFree: 'GF',
+                              peanutFree: 'Peanut-Free',
+                              dairyFree: 'Dairy-Free',
+                              nutFree: 'Nut-Free',
+                              soyFree: 'Soy-Free',
+                              keto: 'Keto',
+                              halal: 'Halal',
+                              kosher: 'Kosher',
+                            };
+                            return (
+                              <span
+                                key={option}
+                                className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-green-100 text-green-800"
+                              >
+                                {optionLabels[option]}
+                              </span>
+                            );
+                          })}
                       </div>
                       
                       <div className="flex items-center justify-between pt-2">
@@ -349,13 +660,13 @@ export default function Home() {
                             <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
-                            <span>Open now</span>
+                            <span>{restaurant.hours}</span>
                           </div>
                           <div className="flex items-center">
                             <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                             </svg>
-                            <span>Call</span>
+                            <span>{restaurant.phone}</span>
                           </div>
                         </div>
                         <Button 
