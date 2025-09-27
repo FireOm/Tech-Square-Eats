@@ -172,7 +172,7 @@ export default function Home() {
           <Card>
             <CardContent className="pt-6">
               <div className="text-center text-gray-600">
-                <p>No restaurants found for "{searchLocation}"</p>
+                <p>No restaurants found for &quot;{searchLocation}&quot;</p>
                 <p className="text-sm mt-1">Try a different location or check your spelling</p>
               </div>
             </CardContent>
