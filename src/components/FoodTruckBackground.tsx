@@ -35,7 +35,7 @@ export default function FoodTruckBackground() {
         speed: 0.2,
         direction: 'right',
         type: 'taco',
-        color: 'bg-orange-500'
+        color: 'bg-[#FF3131]'
       },
       {
         id: '2',
@@ -44,7 +44,7 @@ export default function FoodTruckBackground() {
         speed: 0.2,
         direction: 'left',
         type: 'burger',
-        color: 'bg-red-500'
+        color: 'bg-[#CC2828]'
       },
       {
         id: '3',
@@ -53,7 +53,7 @@ export default function FoodTruckBackground() {
         speed: 0.2,
         direction: 'right',
         type: 'pizza',
-        color: 'bg-yellow-500'
+        color: 'bg-[#FF3131]'
       },
       {
         id: '4',
@@ -62,7 +62,7 @@ export default function FoodTruckBackground() {
         speed: 0.2,
         direction: 'left',
         type: 'ice-cream',
-        color: 'bg-pink-500'
+        color: 'bg-[#CC2828]'
       },
       {
         id: '5',
@@ -71,7 +71,7 @@ export default function FoodTruckBackground() {
         speed: 0.2,
         direction: 'right',
         type: 'coffee',
-        color: 'bg-amber-600'
+        color: 'bg-[#B22222]'
       }
     ];
 

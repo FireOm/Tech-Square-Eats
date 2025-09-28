@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import FoodTruckBackground from '@/components/FoodTruckBackground';
+// import FoodTruckBackground from '@/components/FoodTruckBackground';
 import AtlantaHeader from '@/components/AtlantaHeader';
 import { Dish } from '@/types/restaurant';
 
@@ -23,6 +23,7 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
   const [searchLocation, setSearchLocation] = useState('');
   const [selectedDish, setSelectedDish] = useState<Dish | null>(null);
+  const [selectedDishIndex, setSelectedDishIndex] = useState<number | null>(null);
   const [currentDishIndex, setCurrentDishIndex] = useState(0);
   const [currentText, setCurrentText] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
@@ -250,6 +251,7 @@ export default function Home() {
     const handleEscapeKey = (event: KeyboardEvent) => {
       if (event.key === 'Escape' && selectedDish) {
         setSelectedDish(null);
+        setSelectedDishIndex(null);
       }
     };
 
@@ -306,6 +308,31 @@ export default function Home() {
     setDishes([]);
     setError(null);
     setSelectedDish(null);
+    setSelectedDishIndex(null);
+  };
+
+  // Handle dish selection with flip animation
+  const handleDishClick = (dish: Dish, index: number) => {
+    // If same dish is clicked, close it
+    if (selectedDishIndex === index) {
+      setSelectedDish(null);
+      setSelectedDishIndex(null);
+    } else {
+      setSelectedDish(dish);
+      setSelectedDishIndex(index);
+      
+      // Scroll to the card with a small delay to ensure flip animation starts
+      setTimeout(() => {
+        const cardElement = document.getElementById(`dish-card-${index}`);
+        if (cardElement) {
+          cardElement.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'center',
+            inline: 'nearest' 
+          });
+        }
+      }, 100);
+    }
   };
 
   // Handle form submission
@@ -316,9 +343,9 @@ export default function Home() {
 
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-orange-100 via-white to-orange-50">
+    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-amber-50 via-[#F5E9D6] to-yellow-50">
       {/* Animated Food Truck Background */}
-      <FoodTruckBackground />
+      {/* <FoodTruckBackground /> */}
       
       {/* Main Content */}
       <div className="relative z-10 min-h-screen">
@@ -327,7 +354,7 @@ export default function Home() {
         <div className={`transition-all duration-700 ease-in-out ${
           isSearchView 
             ? 'min-h-screen flex flex-col justify-center p-4 sm:p-6 lg:p-8' 
-            : 'sticky top-0 z-20 bg-gradient-to-b from-white/95 via-white/90 to-white/80 backdrop-blur-md border-b border-white/50 shadow-lg py-2 px-4 sm:px-6 lg:px-8'
+            : 'sticky top-0 z-20 bg-gradient-to-b from-[#F5E9D6]/95 via-[#F5E9D6]/90 to-[#F5E9D6]/80 backdrop-blur-md border-b border-[#E6D5C3]/50 shadow-lg py-2 px-4 sm:px-6 lg:px-8'
         }`}>
           <div className={`transition-all duration-700 ease-in-out ${
             isSearchView ? 'max-w-6xl mx-auto w-full' : 'max-w-7xl mx-auto w-full'
@@ -351,20 +378,20 @@ export default function Home() {
               </div>
 
               {/* Search Form */}
-              <Card className={`border-0 rounded-2xl transition-all duration-700 backdrop-blur-md bg-white/80 ${
+              <Card className={`border-0 rounded-2xl transition-all duration-700 backdrop-blur-md bg-[#F5E9D6]/80 ${
                 isSearchView ? 'mb-8 w-full' : 'flex-1'
               }`}>
               {isSearchView && (
                 <CardHeader className="pb-6 pt-8 sm:pt-12 px-8 sm:px-12 lg:px-16">
-                  <CardTitle className="text-4xl font-bold mb-4 text-gray-900 text-center">
-                    <span className="text-black-600">I am feeling for </span>
-                    <span className="text-orange-600 relative">
+                  <CardTitle className="text-4xl font-bold mb-4 text-[#FF3131] text-center">
+                    <span className="text-[#FF3131]">I am feeling for </span>
+                    <span className="text-[#CC2828] relative">
                       {currentText}
                       <span className="animate-pulse text-gray-400">|</span>
                     </span>
-                    <span className="text-black-600"> at Tech Square</span>
+                    <span className="text-[#FF3131]"> at Tech Square</span>
                   </CardTitle>
-                  <CardDescription className="text-lg text-gray-600 text-center">
+                  <CardDescription className="text-lg text-[#CC2828] text-center">
                     Tell us what you&apos;re craving and we&apos;ll find the perfect dishes for you
                   </CardDescription>
                 </CardHeader>
@@ -386,11 +413,11 @@ export default function Home() {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     disabled={loading}
-                    className={`pl-14 text-lg border-2 rounded-2xl border-gray-200 focus:border-orange-500 focus:ring-orange-500 bg-white/90 backdrop-blur-sm transition-all duration-700 ${
+                    className={`pl-14 text-lg border-2 rounded-2xl border-[#E6D5C3] focus:border-[#FF3131] focus:ring-[#FF3131] bg-[#F5E9D6]/90 backdrop-blur-sm transition-all duration-700 ${
                       isSearchView ? 'h-16' : 'h-10'
                     }`}
                   />
-                  <svg className={`absolute left-5 top-1/2 transform -translate-y-1/2 text-orange-400 transition-all duration-700 ${
+                  <svg className={`absolute left-5 top-1/2 transform -translate-y-1/2 text-[#FF3131] transition-all duration-700 ${
                     isSearchView ? 'w-6 h-6' : 'w-4 h-4'
                   }`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -400,7 +427,7 @@ export default function Home() {
               <Button 
                 type="submit" 
                 disabled={loading || !searchQuery.trim()}
-                className={`font-bold disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-700  hover:shadow-xl rounded-2xl bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white ${
+                className={`font-bold disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-700  hover:shadow-xl rounded-2xl bg-gradient-to-r from-[#FF3131] to-[#CC2828] hover:from-[#CC2828] hover:to-[#B22222] text-[#F5E9D6] ${
                   isSearchView ? 'w-full h-16 text-xl' : 'px-4 h-10 text-sm flex-shrink-0'
                 }`}
               >
@@ -445,9 +472,9 @@ export default function Home() {
 
         {/* Error state */}
         {error && (
-          <Card className="mb-6 border-red-200 bg-red-50/80 backdrop-blur-md ">
+          <Card className="mb-6 border-[#FF3131]/30 bg-[#FF3131]/10 backdrop-blur-md ">
             <CardContent className="pt-6">
-              <div className="flex items-center text-red-600">
+              <div className="flex items-center text-[#FF3131]">
                 <svg className="w-6 h-6 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
@@ -468,14 +495,14 @@ export default function Home() {
               : 'transform -translate-y-4 opacity-0'
           }`} style={{ transitionDelay: '100ms' }}>
             <div className="text-center mb-6">
-              <h2 className="text-3xl lg:text-4xl font-bold mb-3 text-gray-900 bg-gradient-to-r from-gray-900 to-orange-600 bg-clip-text text-transparent">
+              <h2 className="text-3xl lg:text-4xl font-bold mb-3 text-[#FF3131] bg-gradient-to-r from-[#FF3131] to-[#CC2828] bg-clip-text text-transparent">
                 Recommended Dishes in {searchLocation}
               </h2>
-              <p className="text-lg text-gray-600">
+              <p className="text-lg text-[#CC2828]">
                 Found {dishes.length} delicious dishes for you
               </p>
               <div className="flex items-center justify-center mt-4">
-                <div className="flex items-center space-x-3 text-sm text-gray-500">
+                <div className="flex items-center space-x-3 text-sm text-[#CC2828]">
                   <svg className="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                   </svg>
@@ -485,122 +512,38 @@ export default function Home() {
             </div>
 
 
-                {/* Selected Dish Details */}
-                {selectedDish && (
-                  <div 
-                    className="mb-6 relative"
-                    onClick={(e) => {
-                      // Close if clicking the background
-                      if (e.target === e.currentTarget) {
-                        setSelectedDish(null);
-                      }
-                    }}
-                  >
-                    <Card className="shadow-xl border-2 border-amber-300 bg-gradient-to-r from-amber-100/80 to-yellow-100/80 backdrop-blur-md">
-                      <CardHeader className="pb-4">
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <CardTitle className="text-2xl text-amber-900 flex items-center">
-                              {selectedDish.name}
-                            </CardTitle>
-                            <CardDescription className="text-lg text-amber-800">
-                              {selectedDish.cuisine} • ${selectedDish.price} • {selectedDish.calories} cal
-                            </CardDescription>
-                          </div>
-                          <Button
-                            onClick={() => setSelectedDish(null)}
-                            variant="outline"
-                            size="sm"
-                            className="border-amber-400 text-amber-700 hover:bg-amber-50 hover:border-amber-500 cursor-pointer"
-                          >
-                            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                            Close
-                          </Button>
-                        </div>
-                      </CardHeader>
-                <CardContent>
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div>
-                      <h4 className="font-semibold text-amber-900 mb-2 flex items-center">
-                        Dish Details
-                      </h4>
-                      <div className="space-y-2 text-sm text-amber-800">
-                        <p><strong>Restaurant:</strong> {selectedDish.restaurant.name}</p>
-                        <p><strong>Address:</strong> {selectedDish.restaurant.address}</p>
-                        <p><strong>Price:</strong> ${selectedDish.price}</p>
-                        <p><strong>Calories:</strong> {selectedDish.calories}</p>
-                        <p><strong>Restaurant Rating:</strong> {selectedDish.restaurant.rating}/5</p>
-                        <p><strong>Description:</strong> {selectedDish.description}</p>
-                      </div>
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-amber-900 mb-2 flex items-center">
-                        Tags & Dietary Options
-                      </h4>
-                      <div className="flex flex-wrap gap-2 mb-3">
-                        {selectedDish.tags.map((tag, index) => (
-                          <span
-                            key={index}
-                            className="px-3 py-1 bg-blue-100 text-blue-800 text-sm font-medium rounded-full border border-blue-300"
-                          >
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
-                      <div className="flex flex-wrap gap-2">
-                        {Object.entries(selectedDish.dietaryOptions)
-                          .filter(([, available]) => available)
-                          .map(([option]) => {
-                            const optionLabels: { [key: string]: string } = {
-                              vegan: 'Vegan',
-                              vegetarian: 'Vegetarian',
-                              glutenFree: 'Gluten-Free',
-                              peanutFree: 'Peanut-Free',
-                              dairyFree: 'Dairy-Free',
-                              nutFree: 'Nut-Free',
-                              soyFree: 'Soy-Free',
-                              keto: 'Keto',
-                              halal: 'Halal',
-                              kosher: 'Kosher',
-                            };
-                            return (
-                              <span
-                                key={option}
-                                className="px-3 py-1 bg-purple-100 text-purple-800 text-sm font-medium rounded-full border border-purple-300"
-                              >
-                                {optionLabels[option]}
-                              </span>
-                            );
-                          })}
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-            )}
 
             {/* Animated Dishes Grid - Full Width */}
             <div className="grid gap-6 grid-cols-1">
               {dishes.map((dish, index) => {
                 const isPlaceholder = dish.id.startsWith('placeholder-');
+                const isSelected = selectedDishIndex === index;
                 
                 return (
-                  <Card 
-                    key={dish.id} 
-                    className={`group hover:shadow-2xl transition-all duration-500 hover:-translate-y-1 border-0 bg-white/70 backdrop-blur-lg ${
-                      animationPhase === 'results' 
-                        ? 'transform translate-y-0 opacity-100 scale-100' 
-                        : 'transform translate-y-8 opacity-0 scale-95'
-                    } ${isPlaceholder ? 'animate-pulse' : 'cursor-pointer hover:bg-white/80'}`}
-                    style={{
-                      transitionDelay: `${index * 100 + 200}ms`,
-                      transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)'
-                    }}
-                    onClick={() => !isPlaceholder && setSelectedDish(dish)}
-                  >
+                  <div key={dish.id} id={`dish-card-${index}`} style={{ perspective: '1000px' }}>
+                    <div 
+                      className={`relative transition-all duration-700`}
+                      style={{
+                        transformStyle: 'preserve-3d',
+                        transform: isSelected ? 'rotateY(180deg)' : 'rotateY(0deg)',
+                        transitionDelay: `${index * 100 + 200}ms`,
+                        transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
+                        transition: 'transform 0.7s cubic-bezier(0.4, 0, 0.2, 1)'
+                      }}
+                    >
+                      {/* Front of the card */}
+                      <Card 
+                        className={`absolute w-full group hover:shadow-2xl transition-all duration-500 border-0 bg-[#F5E9D6]/70 backdrop-blur-lg ${
+                          animationPhase === 'results' 
+                            ? 'transform translate-y-0 opacity-100 scale-100' 
+                            : 'transform translate-y-8 opacity-0 scale-95'
+                        } ${isPlaceholder ? 'animate-pulse' : 'cursor-pointer hover:bg-[#F5E9D6]/80 hover:-translate-y-1'}`}
+                        style={{
+                          backfaceVisibility: 'hidden',
+                          transformStyle: 'preserve-3d'
+                        }}
+                        onClick={() => !isPlaceholder && handleDishClick(dish, index)}
+                      >
                     {isPlaceholder ? (
                       // Placeholder/Skeleton Card
                       <>
@@ -656,21 +599,21 @@ export default function Home() {
                         <CardHeader className="pb-3">
                           <div className="flex items-start justify-between">
                             <div className="flex-1">
-                              <CardTitle className="text-xl font-bold text-gray-900 group-hover:text-orange-600 transition-colors">
+                              <CardTitle className="text-xl font-bold text-[#FF3131] group-hover:text-[#CC2828] transition-colors">
                                 {dish.name}
                               </CardTitle>
                               <CardDescription className="text-base mt-1">
-                                <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800 mr-2">
+                                <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-[#FF3131]/20 text-[#FF3131] mr-2">
                                   {dish.cuisine}
                                 </span>
-                                <span className="text-gray-600 mr-2">${dish.price}</span>
-                                <span className="text-xs text-gray-500">• {dish.calories} cal</span>
+                                <span className="text-[#CC2828] mr-2">${dish.price}</span>
+                                <span className="text-xs text-[#B22222]">• {dish.calories} cal</span>
                               </CardDescription>
                               <div className="mt-2">
-                                <p className="text-sm text-gray-600">{dish.description}</p>
+                                <p className="text-sm text-[#CC2828]">{dish.description}</p>
                               </div>
                               <div className="mt-2">
-                                <p className="text-xs text-gray-500">{dish.restaurant.name}</p>
+                                <p className="text-xs text-[#B22222]">{dish.restaurant.name}</p>
                               </div>
                             </div>
                             <div className="flex items-center ml-4">
@@ -692,7 +635,7 @@ export default function Home() {
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                               </svg>
-                              <p className="text-sm text-gray-600 leading-relaxed">
+                              <p className="text-sm text-[#CC2828] leading-relaxed">
                                 {dish.restaurant.address}
                               </p>
                             </div>
@@ -738,7 +681,7 @@ export default function Home() {
                             </div>
                             
                             <div className="flex items-center justify-between pt-2">
-                              <div className="flex items-center space-x-4 text-sm text-gray-500">
+                              <div className="flex items-center space-x-4 text-sm text-[#B22222]">
                                 <div className="flex items-center">
                                   <span>${dish.price}</span>
                                 </div>
@@ -755,6 +698,228 @@ export default function Home() {
                       </>
                     )}
                   </Card>
+                  
+                  {/* Back of the card - Details */}
+                  {!isPlaceholder && isSelected && selectedDish && (
+                    <Card 
+                      id={`dish-details-${index}`}
+                      className="absolute w-full shadow-xl border-2 border-[#FF3131]/30 bg-gradient-to-r from-[#F5E9D6]/95 to-[#F0E6D2]/95 backdrop-blur-md"
+                      style={{
+                        backfaceVisibility: 'hidden',
+                        transform: 'rotateY(180deg)',
+                        transformStyle: 'preserve-3d'
+                      }}
+                    >
+                      <CardHeader className="pb-4">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <CardTitle className="text-2xl text-[#FF3131] flex items-center">
+                              <svg className="w-6 h-6 mr-2 text-[#FF3131]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                              </svg>
+                              {selectedDish.name} Details
+                            </CardTitle>
+                            <CardDescription className="text-lg text-[#CC2828]">
+                              {selectedDish.cuisine} • ${selectedDish.price} • {selectedDish.calories} cal
+                            </CardDescription>
+                          </div>
+                          <Button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSelectedDish(null);
+                              setSelectedDishIndex(null);
+                            }}
+                            variant="outline"
+                            size="sm"
+                            className="border-[#FF3131] text-[#FF3131] hover:bg-[#F5E9D6] hover:border-[#CC2828] cursor-pointer"
+                          >
+                            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                            Close
+                          </Button>
+                        </div>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="grid md:grid-cols-2 gap-6">
+                          <div>
+                            <h4 className="font-semibold text-[#FF3131] mb-3 flex items-center">
+                              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                              </svg>
+                              Restaurant & Dish Info
+                            </h4>
+                            <div className="space-y-3 text-sm text-[#CC2828]">
+                              <div className="flex items-start">
+                                <svg className="w-4 h-4 mr-2 mt-0.5 text-[#FF3131] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                                </svg>
+                                <div>
+                                  <strong>Restaurant:</strong> {selectedDish.restaurant.name}
+                                </div>
+                              </div>
+                              <div className="flex items-start">
+                                <svg className="w-4 h-4 mr-2 mt-0.5 text-[#FF3131] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                </svg>
+                                <div>
+                                  <strong>Address:</strong> {selectedDish.restaurant.address}
+                                </div>
+                              </div>
+                              <div className="flex items-start">
+                                <svg className="w-4 h-4 mr-2 mt-0.5 text-[#FF3131] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+                                </svg>
+                                <div>
+                                  <strong>Price:</strong> ${selectedDish.price}
+                                </div>
+                              </div>
+                              <div className="flex items-start">
+                                <svg className="w-4 h-4 mr-2 mt-0.5 text-[#FF3131] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                                </svg>
+                                <div>
+                                  <strong>Calories:</strong> {selectedDish.calories}
+                                </div>
+                              </div>
+                              <div className="flex items-start">
+                                <svg className="w-4 h-4 mr-2 mt-0.5 text-[#FF3131] flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                </svg>
+                                <div>
+                                  <strong>Rating:</strong> {selectedDish.restaurant.rating}/5
+                                </div>
+                              </div>
+                              <div className="flex items-start">
+                                <svg className="w-4 h-4 mr-2 mt-0.5 text-[#FF3131] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                                </svg>
+                                <div>
+                                  <strong>Phone:</strong> {selectedDish.restaurant.phone}
+                                </div>
+                              </div>
+                              <div className="mt-3 p-3 bg-[#F0E6D2]/50 rounded-lg">
+                                <strong className="text-[#FF3131]">Description:</strong>
+                                <p className="mt-1 text-[#CC2828]">{selectedDish.description}</p>
+                              </div>
+                            </div>
+                          </div>
+                          <div>
+                            <h4 className="font-semibold text-[#FF3131] mb-3 flex items-center">
+                              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                              </svg>
+                              Tags & Dietary Options
+                            </h4>
+                            <div className="space-y-3">
+                              <div>
+                                <p className="text-sm font-medium text-[#CC2828] mb-2">Tags:</p>
+                                <div className="flex flex-wrap gap-2">
+                                  {selectedDish.tags.map((tag, tagIndex) => (
+                                    <span
+                                      key={tagIndex}
+                                      className="px-3 py-1 bg-blue-100 text-blue-800 text-sm font-medium rounded-full border border-blue-300"
+                                    >
+                                      {tag}
+                                    </span>
+                                  ))}
+                                </div>
+                              </div>
+                              <div>
+                                <p className="text-sm font-medium text-[#CC2828] mb-2">Dietary Options:</p>
+                                <div className="flex flex-wrap gap-2">
+                                  {Object.entries(selectedDish.dietaryOptions)
+                                    .filter(([, available]) => available)
+                                    .map(([option]) => {
+                                      const optionLabels: { [key: string]: string } = {
+                                        vegan: 'Vegan',
+                                        vegetarian: 'Vegetarian',
+                                        glutenFree: 'Gluten-Free',
+                                        peanutFree: 'Peanut-Free',
+                                        dairyFree: 'Dairy-Free',
+                                        nutFree: 'Nut-Free',
+                                        soyFree: 'Soy-Free',
+                                        keto: 'Keto',
+                                        halal: 'Halal',
+                                        kosher: 'Kosher',
+                                      };
+                                      return (
+                                        <span
+                                          key={option}
+                                          className="px-3 py-1 bg-green-100 text-green-800 text-sm font-medium rounded-full border border-green-300"
+                                        >
+                                          {optionLabels[option]}
+                                        </span>
+                                      );
+                                    })}
+                                  {Object.entries(selectedDish.dietaryOptions)
+                                    .filter(([, available]) => available).length === 0 && (
+                                    <span className="text-sm text-gray-500 italic">No specific dietary options specified</span>
+                                  )}
+                                </div>
+                              </div>
+                              
+                              {/* Contact Actions */}
+                              <div className="mt-4 pt-4 border-t border-[#E6D5C3]">
+                                <p className="text-sm font-medium text-[#CC2828] mb-3">Quick Actions:</p>
+                                <div className="flex flex-wrap gap-2">
+                                  <Button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      window.open(`tel:${selectedDish.restaurant.phone}`, '_self');
+                                    }}
+                                    variant="outline"
+                                    size="sm"
+                                    className="border-[#FF3131] text-[#FF3131] hover:bg-[#F5E9D6] hover:border-[#CC2828]"
+                                  >
+                                    <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                                    </svg>
+                                    Call
+                                  </Button>
+                                  <Button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      const address = encodeURIComponent(selectedDish.restaurant.address);
+                                      window.open(`https://maps.google.com?q=${address}`, '_blank');
+                                    }}
+                                    variant="outline"
+                                    size="sm"
+                                    className="border-[#FF3131] text-[#FF3131] hover:bg-[#F5E9D6] hover:border-[#CC2828]"
+                                  >
+                                    <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    </svg>
+                                    Directions
+                                  </Button>
+                                  {selectedDish.restaurant.website && (
+                                    <Button
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        window.open(selectedDish.restaurant.website, '_blank');
+                                      }}
+                                      variant="outline"
+                                      size="sm"
+                                      className="border-[#FF3131] text-[#FF3131] hover:bg-[#F5E9D6] hover:border-[#CC2828]"
+                                    >
+                                      <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9v-9m0-9v9" />
+                                      </svg>
+                                      Website
+                                    </Button>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )}
+                    </div>
+                  </div>
                 );
               })}
             </div>
@@ -763,27 +928,27 @@ export default function Home() {
 
         {/* Empty State */}
         {!loading && !error && dishes.length === 0 && searchLocation && (
-          <Card className="shadow-lg border-0 bg-white/90">
+          <Card className="shadow-lg border-0 bg-[#F5E9D6]/90">
             <CardContent className="pt-12 pb-12">
               <div className="text-center">
-                <div className="w-20 h-20 bg-gradient-to-r from-orange-100 to-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <svg className="w-10 h-10 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="w-20 h-20 bg-gradient-to-r from-[#FF3131]/20 to-[#CC2828]/30 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <svg className="w-10 h-10 text-[#FF3131]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6-4h6m2 5.291A7.962 7.962 0 0118 12a8 8 0 10-8 8 7.962 7.962 0 01-2.291-.5" />
                   </svg>
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-3">
+                <h3 className="text-2xl font-bold text-[#FF3131] mb-3">
                   No dishes found
                 </h3>
-                <p className="text-lg text-gray-600 mb-2">
+                <p className="text-lg text-[#CC2828] mb-2">
                   We couldn&apos;t find any dishes matching your preferences
                 </p>
-                <p className="text-sm text-gray-500 mb-6">
+                <p className="text-sm text-[#B22222] mb-6">
                   Try a different search query or adjust your dietary filters
                 </p>
                 <Button 
                   onClick={handleBackToSearch}
                   variant="outline"
-                  className="border-orange-300 text-orange-600 hover:bg-orange-50"
+                  className="border-[#FF3131] text-[#FF3131] hover:bg-[#F5E9D6]"
                 >
                   <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
