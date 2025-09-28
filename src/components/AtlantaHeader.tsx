@@ -12,7 +12,7 @@ export default function AtlantaHeader() {
           <img 
             src="/4.png" 
             alt="EatOut Logo" 
-            className="w-48 h-18 object-cover object-center"
+            className="w-100 h-20 object-cover object-center"
           />
         </div>
         

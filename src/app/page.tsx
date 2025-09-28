@@ -382,21 +382,21 @@ export default function Home() {
               </div>
 
               {/* Search Form */}
-              <Card className={`border-0 rounded-2xl transition-all duration-700 backdrop-blur-md bg-[#F5E9D6]/80 ${
+              <Card className={`border-2 border-[#FF3131] rounded-2xl transition-all duration-700 backdrop-blur-md bg-[#F5E9D6]/80 ${
                 isSearchView ? 'mb-8 w-full' : 'flex-1'
               }`}>
               {isSearchView && (
                 <CardHeader className="pb-6 pt-8 sm:pt-12 px-8 sm:px-12 lg:px-16">
                   <CardTitle className="text-4xl font-bold mb-4 text-[#FF3131] text-center">
                     <span className="text-[#FF3131]">I am feeling for </span>
-                    <span className="text-[#CC2828] relative">
+                    <span className="text-[#F5E9D6] relative bg-[#FF3131] rounded-2xl px-2 pb-2">
                       {currentText}
                       <span className="animate-pulse text-gray-400">|</span>
                     </span>
                     <span className="text-[#FF3131]"> at Tech Square</span>
                   </CardTitle>
                   <CardDescription className="text-lg text-[#CC2828] text-center">
-                    Tell us what you&apos;re craving and we&apos;ll find the perfect dishes for you
+                    Tell us what you&apos;re craving and we&apos;ll find the perfect dishes for you!
                   </CardDescription>
                 </CardHeader>
               )}
@@ -431,7 +431,7 @@ export default function Home() {
               <Button 
                 type="submit" 
                 disabled={loading || !searchQuery.trim()}
-                className={`font-bold disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-700  hover:shadow-xl rounded-2xl bg-gradient-to-r from-[#FF3131] to-[#CC2828] hover:from-[#CC2828] hover:to-[#B22222] text-[#F5E9D6] ${
+                className={`font-bold disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer transition-all duration-700  hover:shadow-xl rounded-2xl bg-gradient-to-r from-[#FF3131] to-[#CC2828] hover:from-[#CC2828] hover:to-[#B22222] text-[#F5E9D6] ${
                   isSearchView ? 'w-full h-16 text-xl' : 'px-4 h-10 text-sm flex-shrink-0'
                 }`}
               >
@@ -500,18 +500,23 @@ export default function Home() {
           }`} style={{ transitionDelay: '100ms' }}>
             <div className="text-center mb-6">
               <h2 className="text-3xl lg:text-4xl font-bold mb-3 text-[#FF3131] bg-gradient-to-r from-[#FF3131] to-[#CC2828] bg-clip-text text-transparent">
-                Recommended Dishes in {searchLocation}
+                Recommended Dishes 
               </h2>
               <p className="text-lg text-[#CC2828]">
-                Found {dishes.length} delicious dishes for you
+                Found {dishes.length} delicious dishes for you!
               </p>
               <div className="flex items-center justify-center mt-4">
-                <div className="flex items-center space-x-3 text-sm text-[#CC2828]">
-                  <svg className="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                <Button
+                  onClick={handleGetRecommendations}
+                  variant="outline"
+                  size="sm"
+                  className="border-[#FF3131] text-[#FF3131] hover:bg-[#F5E9D6] hover:border-[#CC2828] cursor-pointer text-xs px-3 py-1"
+                >
+                  <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                   </svg>
-                  <span>Updated just now</span>
-                </div>
+                  Suggest More
+                </Button>
               </div>
             </div>
 
@@ -606,14 +611,14 @@ export default function Home() {
                                 <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-[#FF3131]/20 text-[#FF3131] mr-2">
                                   {dish.cuisine}
                                 </span>
-                                <span className="text-[#CC2828] mr-2">${dish.price}</span>
+                                <span className="text-[#CC2828] mr-2">${dish.price.toFixed(2)}</span>
                                 <span className="text-xs text-[#B22222]">• {dish.calories} cal</span>
                               </CardDescription>
                               <div className="mt-2">
                                 <p className="text-sm text-[#CC2828]">{dish.description}</p>
                               </div>
                               <div className="mt-2">
-                                <p className="text-xs text-[#B22222]">{dish.restaurant.name}</p>
+                                <p className="text-xs font-bold text-[#B22222]">{dish.restaurant.name}</p>
                               </div>
                             </div>
                             <div className="flex items-center ml-4">
@@ -660,7 +665,7 @@ export default function Home() {
                               <div className="flex items-center justify-between pt-2">
                                 <div className="flex items-center space-x-4 text-sm text-[#B22222]">
                                   <div className="flex items-center">
-                                    <span>${dish.price}</span>
+                                    <span>${dish.price.toFixed(2)}</span>
                                   </div>
                                   <div className="flex items-center">
                                     <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -672,7 +677,7 @@ export default function Home() {
                                 <Button
                                   variant="ghost"
                                   size="sm"
-                                  className="text-[#FF3131] hover:bg-[#FF3131]/10 text-xs"
+                                  className="text-[#FF3131] hover:bg-[#FF3131]/10 text-xs cursor-pointer"
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     handleDishClick(dish, index);
@@ -699,7 +704,7 @@ export default function Home() {
                                   <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                   </svg>
-                                  Detailed Information
+                                  Restaurant & Dish Information
                                 </h3>
                                 <Button
                                   onClick={(e) => {
@@ -709,7 +714,7 @@ export default function Home() {
                                   }}
                                   variant="ghost"
                                   size="sm"
-                                  className="text-[#FF3131] hover:bg-[#FF3131]/10"
+                                  className="text-[#FF3131] hover:bg-[#FF3131]/10 cursor-pointer"
                                 >
                                   <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -721,10 +726,10 @@ export default function Home() {
                               <div className="grid md:grid-cols-2 gap-6">
                                 <div>
                                   <h4 className="font-semibold text-[#FF3131] mb-3 flex items-center">
-                                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    {/* <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                                    </svg>
-                                    Restaurant & Dish Info
+                                    </svg> */}
+                                    {/* Restaurant & Dish Info */}
                                   </h4>
                                   <div className="space-y-3 text-sm text-[#CC2828]">
                                     <div className="flex items-start">
@@ -749,7 +754,7 @@ export default function Home() {
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
                                       </svg>
                                       <div>
-                                        <strong>Price:</strong> ${dish.price}
+                                        <strong>Price:</strong> ${dish.price.toFixed(2)}
                                       </div>
                                     </div>
                                     <div className="flex items-start">
@@ -922,7 +927,7 @@ export default function Home() {
                 <Button 
                   onClick={handleBackToSearch}
                   variant="outline"
-                  className="border-[#FF3131] text-[#FF3131] hover:bg-[#F5E9D6]"
+                  className="border-[#FF3131] text-[#FF3131] hover:bg-[#F5E9D6] cursor-pointer"
                 >
                   <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
