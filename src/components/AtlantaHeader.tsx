@@ -39,7 +39,7 @@ export default function AtlantaHeader() {
         
         {/* Main Title */}
         <div className="text-center">
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-gold-600 via-orange-600 to-red-600 bg-clip-text text-transparent animate-pulse">
+          <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black text-gray-900 tracking-tight drop-shadow-lg">
             Tech Square Eats
           </h1>
           <div className="text-lg sm:text-xl text-gray-600 mb-2 animate-fade-in">
@@ -57,11 +57,11 @@ export default function AtlantaHeader() {
       <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-gold-400 to-transparent opacity-50"></div>
       <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-orange-400 to-transparent opacity-50"></div>
       
-      {/* Floating Atlanta icons */}
-      <div className="absolute top-2 left-8 text-2xl opacity-20 animate-bounce">🏛️</div>
-      <div className="absolute top-4 right-12 text-xl opacity-20 animate-bounce" style={{animationDelay: '1s'}}>🌳</div>
-      <div className="absolute bottom-2 left-12 text-xl opacity-20 animate-bounce" style={{animationDelay: '2s'}}>🎵</div>
-      <div className="absolute bottom-4 right-8 text-2xl opacity-20 animate-bounce" style={{animationDelay: '0.5s'}}>🍑</div>
+      {/* Floating Atlanta icons - Fixed animations */}
+      <div className="absolute top-2 left-8 text-2xl opacity-20 animate-bounce" style={{animationDuration: '3s'}}>🏛️</div>
+      <div className="absolute top-4 right-12 text-xl opacity-20 animate-bounce" style={{animationDelay: '1s', animationDuration: '4s'}}>🌳</div>
+      <div className="absolute bottom-2 left-12 text-xl opacity-20 animate-bounce" style={{animationDelay: '2s', animationDuration: '5s'}}>🎵</div>
+      <div className="absolute bottom-4 right-8 text-2xl opacity-20 animate-bounce" style={{animationDelay: '0.5s', animationDuration: '3.5s'}}>🍑</div>
     </div>
   );
 }

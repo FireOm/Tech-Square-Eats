@@ -184,3 +184,38 @@
 .shadow-3xl {
   box-shadow: 0 35px 60px -12px rgba(0, 0, 0, 0.25);
 }
+
+/* 3D Marauder's Map Effects */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.transform-gpu {
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+/* Magical ink animation */
+@keyframes magical-ink {
+  0% { opacity: 0; transform: scale(0.8) rotate(-5deg); }
+  50% { opacity: 0.8; transform: scale(1.1) rotate(2deg); }
+  100% { opacity: 1; transform: scale(1) rotate(0deg); }
+}
+
+.animate-magical-ink {
+  animation: magical-ink 0.6s ease-out;
+}
+
+/* 3D hover effects */
+.hover-3d:hover {
+  transform: translateY(-8px) rotateX(5deg) rotateY(5deg);
+  box-shadow: 0 25px 50px rgba(0,0,0,0.3), 0 0 30px rgba(255,215,0,0.4);
+}
+
+/* Parchment texture */
+.parchment-texture {
+  background-image: 
+    radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 40% 80%, rgba(120, 219, 255, 0.3) 0%, transparent 50%);
+}
